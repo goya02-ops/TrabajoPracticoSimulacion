@@ -1,0 +1,6 @@
+# Imágenes de gráficos generadas por la simulación
+graficas/*.png
+
+# Cache de Python
+__pycache__/
+*.pyc
