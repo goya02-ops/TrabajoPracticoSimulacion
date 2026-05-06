@@ -1,5 +1,5 @@
 import argparse
-from simulador import simular_tiradas, simular_multiples_corridas, simular_todas_corridas
+from simulador import simular_multiples_corridas, simular_todas_corridas
 from CONSTANTES import MEDIA_TEORICA
 import statistics
 from graficos import (
@@ -45,8 +45,7 @@ def main():
     graficar_desvio_acumulada_concatenada(
         desvio_concat, num_corridas, cantidad_tiradas)
 
-    resultados = simular_tiradas(cantidad_tiradas)
-    graficar_histograma(resultados, cantidad_tiradas)
+    graficar_histograma(resultados_concat, num_corridas, cantidad_tiradas)
 
     medias = simular_multiples_corridas(
         num_corridas, cantidad_tiradas, numero_elegido)

@@ -8,16 +8,17 @@ from CONSTANTES import (
 RUTA_GUARDADO = 'graficas/'
 
 
-def graficar_histograma(resultados, cantidad_tiradas):
+def graficar_histograma(resultados, num_corridas, tiradas_por_corrida):
+    total = len(resultados)
     plt.figure(figsize=(12, 6))
     counts = [resultados.count(i) for i in range(37)]
     colors = [plt.cm.tab20(i / 37) for i in range(37)]
     plt.bar(range(37), counts, color=colors, edgecolor='black')
-    plt.title('Histograma de resultados de la ruleta')
+    plt.title(f'Histograma de resultados — {num_corridas} corridas x {tiradas_por_corrida:,} tiradas ({total:,} total)')
     plt.xlabel('Número')
     plt.ylabel('Frecuencia absoluta')
     plt.xticks(range(37), rotation=90)
-    linea_teorica = cantidad_tiradas * PROBABILIDAD_TEORICA
+    linea_teorica = total * PROBABILIDAD_TEORICA
     plt.axhline(y=linea_teorica, color='r', linestyle='--',
                 label=f'Frecuencia teórica ≈ {linea_teorica:.1f}')
     plt.legend()
