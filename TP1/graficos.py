@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from TP1.CONSTANTES import (
+from CONSTANTES import (
     PROBABILIDAD_TEORICA,
     MEDIA_TEORICA,
     VARIANZA_TEORICA,

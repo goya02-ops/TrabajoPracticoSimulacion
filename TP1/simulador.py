@@ -1,12 +1,12 @@
 import random
 
-from TP1.calculos import (
+from calculos import (
     calcular_frecuencia_acumulada,
     calcular_media_acumulada,
     calcular_varianza_acumulada,
     calcular_desvio_acumulado,
 )
-from TP1.CONSTANTES import NUMERO_RULETA
+from CONSTANTES import NUMERO_RULETA
 
 
 def simular_tiradas(cantidad_tiradas):

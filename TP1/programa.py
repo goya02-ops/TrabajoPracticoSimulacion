@@ -1,8 +1,8 @@
 import argparse
-from TP1.simulador import simular_tiradas, simular_multiples_corridas, simular_todas_corridas
-from TP1.CONSTANTES import MEDIA_TEORICA
+from simulador import simular_tiradas, simular_multiples_corridas, simular_todas_corridas
+from CONSTANTES import MEDIA_TEORICA
 import statistics
-from TP1.graficos import (
+from graficos import (
     graficar_histograma,
     graficar_distribucion_medias,
     graficar_boxplot_medias,

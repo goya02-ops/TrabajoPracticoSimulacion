@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from TP1.CONSTANTES import NUMERO_RULETA
+from CONSTANTES import NUMERO_RULETA
 import random
 
 RUTA_GUARDADO = 'graficas/'
