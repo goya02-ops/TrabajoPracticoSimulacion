@@ -20,15 +20,15 @@ def parse_arguments():
     
     return parser.parse_args()
 
-nros_negro = {1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36}
-rojos = {2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35}
+nro_negros = {1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36}
+nro_rojos = {2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35}
 
-nros_verde = {0}
+nro_verde = {0}
 
 def tiro():
     return random.randint(0,36)
 
-def estrategia_fibonacci(capital_ini, apuesta_ini,rojos, tiradas):
+def estrategia_fibonacci(capital_ini, apuesta_ini,nro_rojos, tiradas):
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
@@ -40,7 +40,7 @@ def estrategia_fibonacci(capital_ini, apuesta_ini,rojos, tiradas):
         print(historial_capital)
         if capital <= 0:
             break
-        elif tiro() in rojos:
+        elif tiro() in nro_rojos:
             capital+=apuesta
             apuesta = apuesta_ini
         else:
@@ -51,7 +51,7 @@ def estrategia_fibonacci(capital_ini, apuesta_ini,rojos, tiradas):
         
     return capital
 
-def estrategia_dAlembert(capital_ini, apuesta_ini,rojos, tiradas):
+def estrategia_dAlembert(capital_ini, apuesta_ini,nro_rojos, tiradas):
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
@@ -61,7 +61,7 @@ def estrategia_dAlembert(capital_ini, apuesta_ini,rojos, tiradas):
         print(historial_capital)
         if capital <= 0:
             break
-        elif tiro() in rojos:
+        elif tiro() in nro_rojos:
             capital+=apuesta
             apuesta = max(apuesta_ini, apuesta-apuesta_ini)
         else:
@@ -72,7 +72,7 @@ def estrategia_dAlembert(capital_ini, apuesta_ini,rojos, tiradas):
         
     return capital
     
-def estrategia_martingala(capital_ini, apuesta_ini,rojos, tiradas):
+def estrategia_martingala(capital_ini, apuesta_ini,nro_rojos, tiradas):
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
@@ -84,7 +84,7 @@ def estrategia_martingala(capital_ini, apuesta_ini,rojos, tiradas):
         if capital <= 0 or capital < apuesta:
             print('perdi')
             break
-        elif tiro() in rojos:
+        elif tiro() in nro_rojos:
             capital+=apuesta
             apuesta = apuesta_ini
         else:
@@ -96,7 +96,7 @@ def estrategia_martingala(capital_ini, apuesta_ini,rojos, tiradas):
         
     return capital
 
-def estrategia_paroli(capital_ini, apuesta_ini,rojos, tiradas):
+def estrategia_paroli(capital_ini, apuesta_ini,nro_rojos, tiradas):
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
@@ -108,7 +108,7 @@ def estrategia_paroli(capital_ini, apuesta_ini,rojos, tiradas):
         if capital <= 0 or capital < apuesta:
             print('perdi')
             break
-        elif tiro() in rojos:
+        elif tiro() in nro_rojos:
             i+=1
             capital+=apuesta
             apuesta = apuesta*2
@@ -143,5 +143,5 @@ def main():
     
 if __name__ == "__main__":
     main()
-    estrategia_paroli(1000,20,rojos,1000)
+    estrategia_paroli(1000,20,nro_rojos,1000)
     
