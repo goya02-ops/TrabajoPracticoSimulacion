@@ -1,3 +1,7 @@
+
+from matplotlib import backend_bases
+import enum
+from matplotlib import figure
 import argparse
 import random
 import matplotlib.pyplot as plt
@@ -29,37 +33,52 @@ def tiro():
     return random.randint(0,36)
 
 def estrategia_fibonacci(capital_ini, apuesta_ini,nro_rojos, tiradas):
+    estrategia="Fibonacci" #MODIFCAR
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
-    fib = [1,1,2,3,5,8,13,21,34,55,89,144]
+    historial_apuestas = []
+    bancarrota = 0
+    fib = [1,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181]
     i = 0
     for _ in range(tiradas):
+        apuesta = apuesta_ini * fib[i]
         print(f'tirada:', )
         historial_capital.append(capital)
+        historial_apuestas.append(apuesta)
         print(historial_capital)
-        if capital <= 0:
+        if capital < apuesta:
+            bancarrota = 1
             break
         elif tiro() in nro_rojos:
             capital+=apuesta
-            apuesta = apuesta_ini
+            i-=2
+            if i < 0:
+                i=0
         else:
             capital-=apuesta
-            apuesta = apuesta * fib[i]
             i+=1
+        print(f'numero: {fib[i]}')
+        print(f'apuesta: {apuesta}')
         print(f'Capital final: {capital}')
-        
+    graficar_flujo_caja(tiradas ,historial_capital,capital_ini, bancarrota, estrategia)
+    graficar_evolucion_apuestas(tiradas, historial_apuestas, estrategia)   
     return capital
 
 def estrategia_dAlembert(capital_ini, apuesta_ini,nro_rojos, tiradas):
+    estrategia="dAlembert" #MODIFCAR
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
+    historial_apuestas = []
+    bancarrota = 0
     for _ in range(tiradas):
         print(f'tirada:', )
         historial_capital.append(capital)
+        historial_apuestas.append(apuesta)
         print(historial_capital)
-        if capital <= 0:
+        if capital <= 0 or capital < apuesta:
+            bancarrota = 1
             break
         elif tiro() in nro_rojos:
             capital+=apuesta
@@ -69,19 +88,25 @@ def estrategia_dAlembert(capital_ini, apuesta_ini,nro_rojos, tiradas):
             apuesta = apuesta + apuesta_ini
 
         print(f'Capital final: {capital}')
-        
+    graficar_flujo_caja(tiradas ,historial_capital,capital_ini, bancarrota, estrategia)
+    graficar_evolucion_apuestas(tiradas, historial_apuestas, estrategia)     
     return capital
     
 def estrategia_martingala(capital_ini, apuesta_ini,nro_rojos, tiradas):
+    estrategia="Martingala" #MODIFCAR
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
+    historial_apuestas = []
+    bancarrota = 0
 
     for _ in range(tiradas):
         print(f'tirada:',  tiradas )
         historial_capital.append(capital)
+        historial_apuestas.append(apuesta)
         print(historial_capital)
         if capital <= 0 or capital < apuesta:
+            bancarrota = 1
             print('perdi')
             break
         elif tiro() in nro_rojos:
@@ -93,26 +118,32 @@ def estrategia_martingala(capital_ini, apuesta_ini,nro_rojos, tiradas):
             apuesta = apuesta*2
         print(f'apuesta: {apuesta}')
         print(f'Capital final: {capital}')
+    graficar_flujo_caja(tiradas ,historial_capital,capital_ini, bancarrota, estrategia)
+    graficar_evolucion_apuestas(tiradas, historial_apuestas, estrategia)   
         
     return capital
 
 def estrategia_paroli(capital_ini, apuesta_ini,nro_rojos, tiradas):
+    estrategia="Paroli" #MODIFCAR
     capital = capital_ini
     apuesta = apuesta_ini
     historial_capital =[]
+    historial_apuestas = []
+    bancarrota = 0
     i=0
     for _ in range(tiradas):
         print(f'tirada:',  tiradas )
         historial_capital.append(capital)
+        historial_apuestas.append(apuesta)
         print(historial_capital)
         if capital <= 0 or capital < apuesta:
             print('perdi')
             break
         elif tiro() in nro_rojos:
-            i+=1
             capital+=apuesta
             apuesta = apuesta*2
-            if i==2:
+            i+=1
+            if i==3:
                 apuesta = apuesta_ini
                 i=0
         else:
@@ -120,9 +151,83 @@ def estrategia_paroli(capital_ini, apuesta_ini,nro_rojos, tiradas):
             apuesta = apuesta_ini
         print(f'apuesta: {apuesta}')
         print(f'Capital final: {capital}')
+    graficar_flujo_caja(tiradas ,historial_capital,capital_ini, bancarrota, estrategia)
+    graficar_evolucion_apuestas(tiradas, historial_apuestas, estrategia)   
         
     return capital
 
+import os
+
+def graficar_flujo_caja(num_tiradas, historial_capital, capital_ini, bancarrota, estrategia):
+    plt.figure(figsize=(10, 6))
+    
+    # Línea horizontal para el capital inicial
+    plt.axhline(capital_ini, color='r', linestyle='--', label=f'Capital Inicial ({capital_ini})')
+    # Línea horizontal en 0 para ver si quebramos
+    #plt.axhline(0, color='black', linestyle='--', label=f'Bancarrota {bancarrota}')
+    
+    # Creamos el eje X correctamente (de 1 hasta la cantidad de tiradas registradas)
+    eje_x = range(1, len(historial_capital) + 1)
+    
+    plt.plot(eje_x, historial_capital, label='Capital')
+    
+    plt.title(f'Flujo de Caja - Estrategia: {estrategia}')
+    plt.xlabel('Número de Tirada')
+    plt.ylabel('Capital Disponible')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    
+    # Nos aseguramos de que la carpeta 'image' exista antes de guardar
+    os.makedirs('image', exist_ok=True)
+    plt.savefig(f'image/flujocaja_{estrategia}.png')
+    plt.show()
+
+def graficar_probabilidad_ganar(num_tiradas, historial_capital, capital_ini, bancarrota, estrategia):
+    plt.figure(figsize=(10, 6))
+    
+    # Línea horizontal para el capital inicial
+    plt.axhline(capital_ini, color='r', linestyle='--', label=f'Capital Inicial ({capital_ini})')
+    # Línea horizontal en 0 para ver si quebramos
+    plt.axhline(0, color='black', linestyle='--', label=f'Bancarrota {bancarrota}')
+    
+    # Creamos el eje X correctamente (de 1 hasta la cantidad de tiradas registradas)
+    eje_x = range(1, len(historial_capital) + 1)
+    
+    plt.plot(eje_x, historial_capital, label='Capital')
+    
+    plt.title(f'Probabilidad Ganar - Estrategia: {estrategia}')
+    plt.xlabel('Número de Tirada')
+    plt.ylabel('Capital Disponible')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    
+    # Nos aseguramos de que la carpeta 'image' exista antes de guardar
+    os.makedirs('image', exist_ok=True)
+    plt.savefig(f'image/probabilidad_ganar_{estrategia}.png')
+    plt.show()
+
+def graficar_evolucion_apuestas(num_tiradas, historial_apuestas, estrategia):
+    plt.figure(figsize=(10, 6))
+    
+    
+    # Creamos el eje X correctamente (de 1 hasta la cantidad de tiradas registradas)
+    eje_x = range(1, len(historial_apuestas) + 1)
+    
+    plt.plot(eje_x, historial_apuestas, label='Apuesta')
+    
+    plt.title(f'Evolucion Apuestas - Estrategia: {estrategia}')
+    plt.xlabel('Número de Tirada')
+    plt.ylabel('Apuesta')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    
+    # Nos aseguramos de que la carpeta 'image' exista antes de guardar
+    os.makedirs('image', exist_ok=True)
+    plt.savefig(f'image/evolucionapuestas_{estrategia}.png')
+    plt.show()
 
 def main():
     # 1. Obtener parámetros del usuario
@@ -143,5 +248,9 @@ def main():
     
 if __name__ == "__main__":
     main()
-    estrategia_paroli(1000,20,nro_rojos,1000)
+    estrategia_fibonacci(10000,20,nro_rojos,500)
+    estrategia_dAlembert(10000,20,nro_rojos,500)
+    estrategia_martingala(10000,20,nro_rojos,500)
+    estrategia_paroli(10000,20,nro_rojos,500)
+
     
