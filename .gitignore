@@ -4,3 +4,6 @@
 # Cache de Python
 __pycache__/
   *.pyc
+
+# Documentación generada para los agentes
+AGENTS.md
