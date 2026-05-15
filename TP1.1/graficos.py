@@ -5,7 +5,7 @@ from CONSTANTES import (
     VARIANZA_TEORICA,
     DESVIO_TEORICO,
 )
-RUTA_GUARDADO = 'graficas/'
+RUTA_GUARDADO = 'image/'
 
 
 def graficar_histograma(resultados, num_corridas, tiradas_por_corrida):
@@ -64,30 +64,14 @@ def graficar_boxplot_medias(medias, num_corridas, tiradas_por_corrida):
 
 def graficar_frecuencia_relativa_concatenada(frec_acumulada, numero_elegido, num_corridas, tiradas_por_corrida):
     """Gráfico único: frecuencia relativa acumulada de todas las corridas concatenadas."""
-    plt.figure(figsize=(14, 7))
-
-    # Submuestreo si hay >100K puntos para performance
-    max_puntos = 100000
-    step = max(1, len(frec_acumulada) // max_puntos)
-    x_sub = range(1, len(frec_acumulada) + 1, step)
-    y_sub = frec_acumulada[::step]
-
-    plt.plot(x_sub, y_sub, color='steelblue', linewidth=0.8, alpha=0.8,
-             label=f'Frecuencia observada del número {numero_elegido}')
-
-    plt.axhline(y=PROBABILIDAD_TEORICA, color='red', linestyle='--',
-                linewidth=2, label=f'Probabilidad teórica: {PROBABILIDAD_TEORICA:.4f}')
-
-    plt.title(
-        f'Frecuencia Relativa Acumulada — {num_corridas} corridas x {tiradas_por_corrida:,} tiradas')
-    plt.xlabel('Número de tirada (acumulado de todas las corridas)')
-    plt.ylabel('Frecuencia relativa')
-    plt.legend(loc='upper right')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(
-        f'{RUTA_GUARDADO}/frecuencia_relativa_concatenada.png', dpi=150)
-    plt.show()
+    _graficar_concatenado(
+        frec_acumulada, PROBABILIDAD_TEORICA,
+        f'Frecuencia Relativa Acumulada (número {numero_elegido})',
+        'Frecuencia relativa',
+        'frecuencia_relativa_concatenada.png',
+        num_corridas, tiradas_por_corrida,
+        etiqueta=f'Frecuencia observada del número {numero_elegido}',
+    )
 
 
 def graficar_frecuencia_relativa_multiples(todas_frec_relativa, n_corridas):
@@ -117,8 +101,11 @@ def graficar_frecuencia_relativa_multiples(todas_frec_relativa, n_corridas):
     plt.show()
 
 
-def _graficar_concatenado(datos, valor_teorico, titulo, etiqueta_y, nombre_archivo, num_corridas, tiradas_por_corrida):
+def _graficar_concatenado(datos, valor_teorico, titulo, etiqueta_y, nombre_archivo, num_corridas, tiradas_por_corrida, etiqueta=None):
     """Función genérica para gráficos concatenados con submuestreo."""
+    if etiqueta is None:
+        etiqueta = 'Valor observado'
+    
     plt.figure(figsize=(14, 7))
 
     max_puntos = 100000
@@ -127,7 +114,7 @@ def _graficar_concatenado(datos, valor_teorico, titulo, etiqueta_y, nombre_archi
     y_sub = datos[::step]
 
     plt.plot(x_sub, y_sub, color='steelblue', linewidth=0.8, alpha=0.8,
-             label=f'Valor observado')
+             label=etiqueta)
 
     plt.axhline(y=valor_teorico, color='red', linestyle='--',
                 linewidth=2, label=f'Valor teórico: {valor_teorico:.4f}')

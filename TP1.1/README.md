@@ -28,18 +28,20 @@ python3 programa.py -c 1000 -n 10 -e 7
 ## Estructura del proyecto
 
 ```
+TP1.1/
 ├── programa.py          ← Punto de entrada, CLI y orquestación
-├── simulador.py         ← Lógica de simulación (tiradas, corridas)
+├── motor.py             ← Motor de simulación (tiradas, corridas)
 ├── calculos.py          ← Cálculos estadísticos O(n) acumulados
 ├── graficos.py          ← Generación de gráficos con matplotlib
-├── apuestas.py          ← Simulación de apuestas y gráfico de capital
 ├── CONSTANTES.py        ← Constantes del modelo (ruleta europea 0-36)
-└── graficas/            ← Directorio de salida de los gráficos PNG
+├── image/               ← Directorio de salida de los gráficos PNG
+├── README.md
+└── enunciado.md         ← Enunciado original del TP
 ```
 
 ## Gráficos generados (8)
 
-Todos se guardan en `graficas/`:
+Todos se guardan en `image/`:
 
 | # | Archivo | Descripción | Concepto |
 |---|---------|-------------|----------|
@@ -87,22 +89,6 @@ $$\sigma = \sqrt{114} \approx 10.677$$
 
 La distribución de las medias muestrales de múltiples corridas converge a una distribución normal N(μ, σ/√n), donde μ = 18 y σ = √114, independientemente de que la distribución original sea uniforme.
 
-## Simulación de apuestas
-
-El módulo `apuestas.py` contiene funciones reutilizables para simular y graficar la evolución del capital al apostar a un número fijo:
-
-```python
-from apuestas import simular_apuestas, graficar_evolucion_capital
-
-saldos = simular_apuestas(
-    cantidad_tiradas=1000,
-    numero_elegido=7,
-    saldo_inicial=1000,
-    apuesta=1,
-)
-graficar_evolucion_capital(saldos)
-```
-
 ## Salida de ejemplo
 
 ```
@@ -110,6 +96,21 @@ Media de las medias: 17.9592 (esperada: 18.0)
 Desvío estándar de las medias: 0.3562
 Media teórica: 18.0
 ```
+
+## Notas técnicas
+
+### Uso de la librería `statistics`
+
+En `calculos.py` usamos la librería `statistics` de Python solo cuando necesitamos un **valor final** (no acumulativo):
+
+- `media_final()` → usa `statistics.mean()` ✓
+
+**No usamos `statistics` en `todos_los_estadisticos()`** porque:
+- Necesitamos valores **acumulativos** en cada punto de la secuencia (para los gráficos de convergencia)
+- Usar `statistics.mean(data[:i])` en cada iteración sería O(n²) 
+- El cálculo manual con sumas acumulativas es O(n), mucho más eficiente
+
+Para 2,000,000 de datos: O(n) = ~2M operaciones vs O(n²) = ~4 billones de operaciones.
 
 ## Enunciado
 

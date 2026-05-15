@@ -1,5 +1,5 @@
 import argparse
-from simulador import simular_multiples_corridas, simular_todas_corridas
+from motor import iniciar_experimento
 from CONSTANTES import MEDIA_TEORICA
 import statistics
 from graficos import (
@@ -32,24 +32,29 @@ def main():
     numero_elegido = args.elegido
     num_corridas = args.corridas
 
-    todas_frec, resultados_concat, frec_concat, media_concat, varianza_concat, desvio_concat = simular_todas_corridas(
+    resultados = iniciar_experimento(
         num_corridas, cantidad_tiradas, numero_elegido)
 
     graficar_frecuencia_relativa_concatenada(
-        frec_concat, numero_elegido, num_corridas, cantidad_tiradas)
-    graficar_frecuencia_relativa_multiples(todas_frec, num_corridas)
+        resultados['frec_concat'], numero_elegido, num_corridas, cantidad_tiradas)
+    if num_corridas <= 15:
+        # Solo graficamos las frecuencias relativas individuales si no hay demasiadas corridas, para evitar saturar el gráfico
+        graficar_frecuencia_relativa_multiples(
+            resultados['todas_frec'], num_corridas)
     graficar_media_acumulada_concatenada(
-        media_concat, num_corridas, cantidad_tiradas)
+        resultados['media_concat'], num_corridas, cantidad_tiradas)
     graficar_varianza_acumulada_concatenada(
-        varianza_concat, num_corridas, cantidad_tiradas)
+        resultados['varianza_concat'], num_corridas, cantidad_tiradas)
     graficar_desvio_acumulada_concatenada(
-        desvio_concat, num_corridas, cantidad_tiradas)
+        resultados['desvio_concat'], num_corridas, cantidad_tiradas)
 
-    graficar_histograma(resultados_concat, num_corridas, cantidad_tiradas)
+    graficar_histograma(
+        resultados['resultados_concat'], num_corridas, cantidad_tiradas)
 
-    medias = simular_multiples_corridas(
-        num_corridas, cantidad_tiradas, numero_elegido)
-    graficar_distribucion_medias(medias, num_corridas, cantidad_tiradas)
+    medias = resultados['todas_las_medias']
+    if num_corridas >= 200:
+        # Solo graficamos la distribución de las medias si hay una cantidad razonable de corridas, para que tenga sentido visualmente
+        graficar_distribucion_medias(medias, num_corridas, cantidad_tiradas)
     graficar_boxplot_medias(medias, num_corridas, cantidad_tiradas)
 
     print(f'Media de las medias: {statistics.mean(medias):.4f}')
