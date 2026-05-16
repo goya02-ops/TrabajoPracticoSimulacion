@@ -6,11 +6,7 @@ from estrategias import (
     estrategia_martingala,
     estrategia_paroli,
 )
-from graficos import (
-    graficar_flujo_caja,
-    graficar_evolucion_apuestas,
-    graficar_frecuencia_acumulada,
-)
+from graficos import graficador
 
 ESTRATEGIAS = {
     'i': estrategia_fibonacci,
@@ -50,6 +46,7 @@ def main():
 
     # Capital infinito o acotado
     if args.capital == 'i':
+        # Si el capital es infinito, lo tratamos como 0 para el flujo de caja, pero sin riesgo de bancarrota
         capital_ini = float('inf')
     else:
         capital_ini = int(args.capital)
@@ -65,9 +62,7 @@ def main():
 
     resultado = estrategia_fn(capital_ini, args.apuesta, args.tiradas)
 
-    graficar_flujo_caja(resultado['historial_capital'], capital_ini, nombre)
-    graficar_evolucion_apuestas(resultado['historial_apuestas'], nombre)
-    graficar_frecuencia_acumulada(resultado['historial_frecuencia'], nombre)
+    graficador(capital_ini, nombre, resultado)
 
 
 if __name__ == "__main__":

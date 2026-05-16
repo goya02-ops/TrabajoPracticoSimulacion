@@ -11,7 +11,10 @@ def simular(
     nombre: str,
     estado_ini=None,
 ) -> dict:
-    capital = capital_ini
+    if capital_ini == float('inf'):
+        capital = 0
+    else:
+        capital = capital_ini
     apuesta = apuesta_ini
     # var estado es solo para estrategias que necesitan un estado adicional (como Fibonacci o Paroli)
     estado = estado_ini
@@ -25,7 +28,7 @@ def simular(
         historial_capital.append(capital)
         historial_apuestas.append(apuesta)
 
-        if capital < apuesta:
+        if capital < apuesta and capital_ini != float('inf'):
             bancarrota = True
             break
 
