@@ -1,5 +1,5 @@
 import random
-from tests import test_chi_cuadrado, test_rachas
+from tests import test_chi_cuadrado, test_rachas, test_monobit, test_sumas_acumuladas
 
 
 def GCL(seed, multiplo, incremento, modulo, iteraciones):
@@ -38,18 +38,37 @@ def built_in_random(iteraciones):
 
 
 if __name__ == "__main__":
+    from graficas import generar_graficas
 
-    print("GLC")
-    numerosGLC = list(GCL(1234, 1103515245, 12345, 2**64, 100))
+    print("=" * 40)
+    print("GCL")
+    print("=" * 40)
+    numerosGLC = list(GCL(1234, 1103515245, 12345, 2**64, 10000))
     test_chi_cuadrado(numerosGLC, num_celdas=10, alfa=0.01)
     test_rachas(numerosGLC, alfa=0.01)
+    test_monobit(numerosGLC, alfa=0.01)
+    test_sumas_acumuladas(numerosGLC, alfa=0.01)
 
-    print("\nMid Square")
-    numerosMidSquare = list(mid_square(9731, 100))
+    print("\n" + "=" * 40)
+    print("Mid Square")
+    print("=" * 40)
+    numerosMidSquare = list(mid_square(9731, 10000))
     test_chi_cuadrado(numerosMidSquare, num_celdas=10, alfa=0.01)
     test_rachas(numerosMidSquare, alfa=0.01)
+    test_monobit(numerosMidSquare, alfa=0.01)
+    test_sumas_acumuladas(numerosMidSquare, alfa=0.01)
 
-    print("\nBuilt-in Random")
-    numerosBuiltInRandom = list(built_in_random(100))
+    print("\n" + "=" * 40)
+    print("Built-in Random")
+    print("=" * 40)
+    numerosBuiltInRandom = list(built_in_random(10000))
     test_chi_cuadrado(numerosBuiltInRandom, num_celdas=10, alfa=0.01)
     test_rachas(numerosBuiltInRandom, alfa=0.01)
+    test_monobit(numerosBuiltInRandom, alfa=0.01)
+    test_sumas_acumuladas(numerosBuiltInRandom, alfa=0.01)
+
+    print("\n" + "=" * 40)
+    print("Generando imágenes de bits...")
+    print("=" * 40)
+    generar_graficas(numerosGLC, numerosMidSquare, numerosBuiltInRandom)
+

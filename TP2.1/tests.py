@@ -84,3 +84,76 @@ def test_rachas(numeros, alfa=0.01):
             "RESULTADO: RECHAZADO (Se rechaza H0 - Las rachas NO son consistentes con la aleatoriedad)")
 
     return pasa_test, v_obs, p_valor
+
+
+def test_monobit(numeros, alfa=0.01):
+    n = len(numeros)
+
+    # Convertir los números a bits: 1 si >= 0.5, -1 si < 0.5
+    bits = [1 if num >= 0.5 else -1 for num in numeros]
+
+    # Suma de los bits (+1 y -1)
+    S_n = sum(bits)
+
+    # Estadístico de prueba: |S_n| / sqrt(n)
+    s_obs = abs(S_n) / math.sqrt(n)
+
+    # P-valor usando la función complementaria del error
+    p_valor = math.erfc(s_obs / math.sqrt(2))
+
+    pasa_test = p_valor >= alfa
+
+    print("--- PRUEBA MONOBIT (Frecuencia) ---")
+    print(f"N: {n}")
+    print(f"Suma S_n: {S_n}")
+    print(f"Estadístico s_obs: {s_obs:.4f}")
+    print(f"P-valor: {p_valor:.4f}")
+
+    if pasa_test:
+        print(
+            "RESULTADO: APROBADO (No se rechaza H0 - La cantidad de 0s y 1s es aproximadamente igual)")
+    else:
+        print(
+            "RESULTADO: RECHAZADO (Se rechaza H0 - La cantidad de 0s y 1s NO es aproximadamente igual)")
+
+    return pasa_test, s_obs, p_valor
+
+
+def test_sumas_acumuladas(numeros, alfa=0.01):
+    n = len(numeros)
+
+    # Convertir los números a bits: 1 si >= 0.5, -1 si < 0.5
+    bits = [1 if num >= 0.5 else -1 for num in numeros]
+
+    # Calcular las sumas parciales acumuladas (random walk)
+    sumas_parciales = []
+    acumulado = 0
+    for b in bits:
+        acumulado += b
+        sumas_parciales.append(acumulado)
+
+    # El estadístico z es el máximo valor absoluto de las sumas parciales
+    z = max(abs(s) for s in sumas_parciales)
+
+    # P-valor: aproximación mediante la distribución normal estándar
+    raiz_n = math.sqrt(n)
+    suma_inf = 0
+    for k in range(int((-raiz_n / z + 1) / 4), int((raiz_n / z - 1) / 4) + 1):
+        suma_inf += math.erfc((4 * k + 1) * z / raiz_n) - math.erfc((4 * k + 3) * z / raiz_n)
+    p_valor = 1 - suma_inf
+
+    pasa_test = p_valor >= alfa
+
+    print("--- PRUEBA DE SUMAS ACUMULADAS ---")
+    print(f"N: {n}")
+    print(f"Estadístico z (máx. suma acumulada): {z}")
+    print(f"P-valor: {p_valor:.4f}")
+
+    if pasa_test:
+        print(
+            "RESULTADO: APROBADO (No se rechaza H0 - Las sumas acumuladas son consistentes con la aleatoriedad)")
+    else:
+        print(
+            "RESULTADO: RECHAZADO (Se rechaza H0 - Las sumas acumuladas NO son consistentes con la aleatoriedad)")
+
+    return pasa_test, z, p_valor
