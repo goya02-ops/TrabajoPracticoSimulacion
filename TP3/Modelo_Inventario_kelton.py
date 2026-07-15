@@ -40,12 +40,11 @@ def simular_inventario(mean_interdemand, minlag, maxlag, T_revision, smalls, big
                        K_ord, c, h, p, inv_inicial=60.0, num_dias=365.0, semilla=None):
     """
     Simula el modelo de inventario (s, S) de Law & Kelton, con la misma
-    arquitectura de una sola orden pendiente a la vez del codigo original
-    (Figs. 1.36-1.39): variables escalares amount/t_arribo, sin posicion
+    arquitectura de una sola orden pendiente a variables escalares amount/t_arribo, sin posicion
     de inventario separada. Valido porque T_revision=30 > maxlag=5 dias
     garantiza que cada orden llega antes de la revision siguiente.
 
-    Parametros (misma notacion que el libro, en dias):
+    Parametros (en dias):
         mean_interdemand - tiempo medio entre clientes (dias)
         minlag, maxlag   - lead time, Uniforme(minlag, maxlag) dias
         T_revision       - cada cuantos dias se revisa el inventario
